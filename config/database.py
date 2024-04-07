@@ -1,6 +1,12 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
-client = MongoClient("mongodb+srv://admin:test%40123@cosmoclouddb.jlhyqzp.mongodb.net/?retryWrites=true&w=majority&appName=cosmoCloudDB")
+
+load_dotenv()
+database_url = os.getenv("DATABASE_URL")
+
+client = MongoClient(database_url)
 db  = client.root_db
 
 collection_name = db["root_collection"]
