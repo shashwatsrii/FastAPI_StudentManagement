@@ -74,3 +74,15 @@ async def update_student(id: str, student_update: StudentUpdate):
     # Check if the student was found and updated
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Student not found")
+    
+@router.delete("/students/{id}", status_code=200)
+async def delete_student(id: str = Path(..., title="The ID of the student")):
+    """
+    Delete a specific student by ID.
+    """
+    # Delete the student from the database
+    result = db.students.delete_one({"_id": ObjectId(id)})
+    
+    # Check if the student was found and deleted
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Student not found")
