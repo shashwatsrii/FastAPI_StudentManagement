@@ -24,6 +24,7 @@ async def create_student(student: Student):
     """
     # Insert the student data into the database
     result = db.students.insert_one(student.dict())
+    
     if result.inserted_id:
         return {"id": str(result.inserted_id)}
     else:
@@ -36,8 +37,10 @@ async def list_students(country: str = Query(None, description="To apply filter 
     List students with optional filters.
     """
     query = {}
+    
     if country:
         query['address.country'] = country
+        
     if age:
         query['age'] = {'$gte': age}
     
@@ -51,6 +54,7 @@ async def get_student(id: str = Path(..., title="The ID of the student")):
     Fetch details of a specific student by ID.
     """
     student = db.students.find_one({"_id": ObjectId(id)})
+    
     if student:
         return student
     else:
@@ -61,13 +65,11 @@ async def update_student(id: str, student_update: StudentUpdate):
     """
     Update details of a specific student by ID.
     """
-    # Convert the Pydantic model to a dictionary
+
     update_data = student_update.dict(exclude_unset=True)
     
-    # Update the student in the database
     result = db.students.update_one({"_id": ObjectId(id)}, {"$set": update_data})
     
-    # Check if the student was found and updated
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Student not found")
     
@@ -76,9 +78,10 @@ async def delete_student(id: str = Path(..., title="The ID of the student")):
     """
     Delete a specific student by ID.
     """
-    # Delete the student from the database
+
     result = db.students.delete_one({"_id": ObjectId(id)})
     
-    # Check if the student was found and deleted
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Student not found")
+    
+    return {}
