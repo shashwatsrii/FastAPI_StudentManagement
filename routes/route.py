@@ -1,4 +1,5 @@
 from fastapi import APIRouter , HTTPException, Query, Path
+from fastapi.responses import JSONResponse
 from models.todos import Todo
 from models.students import Student, StudentUpdate
 from config.database import collection_name
@@ -9,16 +10,11 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-#GET Request
+# GET Request
 @router.get("/")
 async def get_root():
     '''Return the name'''
-    todos = list_serial(collection_name.find())
-    return todos
-
-@router.post("/")
-async def post_root(todo : Todo):
-    collection_name.insert_one(dict(todo))
+    return JSONResponse(content={"message": "API Working, go to /docs"})
     
 # POST Request for creating a student
 @router.post("/students", status_code=201)
